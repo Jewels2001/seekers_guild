@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/Jewels2001/seekers_guild/api/db"
+	"github.com/Jewels2001/seekers_guild/api/routes"
 
 	"github.com/gorilla/mux"
 )
@@ -42,6 +43,8 @@ func main() {
     // Setup Router
 	r := mux.NewRouter()
 	r.HandleFunc("/", RootHandler)
+    r.HandleFunc("/users", routes.GetUsersHandler).Methods("GET")
+    r.HandleFunc("/users/{id}", routes.GetUserHandler).Methods("GET")
 
     // Set timeouts on connections
 	srv := &http.Server{
@@ -58,18 +61,18 @@ func main() {
 			log.Println(err)
 		}
 	}()
-    log.Printf("server running at: http://%s:%s", ADDR, PORT)
+    log.Printf("[SETUP] server running at: http://%s:%s", ADDR, PORT)
 
     // Graceful shutdown
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt)
 
 	<-c
-    log.Println("shutdown signal received")
+    log.Println("[SHUTDOWN] shutdown signal received")
 
 	ctx, cancel := context.WithTimeout(context.Background(), wait)
 	defer cancel()
 
 	srv.Shutdown(ctx)
-	log.Println("shutting down")
+	log.Println("[SHUTDOWN] shutting down")
 }

@@ -11,3 +11,11 @@ CREATE TABLE IF NOT EXISTS 'users' (
 	'tokens' FLOAT64 NOT NULL
 );
 `
+
+var get_all_users string = `
+    SELECT * FROM users;
+`
+
+var get_user_by_id string = `
+    SELECT * FROM users WHERE id = ?;
+`

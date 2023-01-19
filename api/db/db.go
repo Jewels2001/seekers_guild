@@ -16,7 +16,7 @@ var err error
 
 func InitDB() error {
 	if _, err := os.Stat(DB_PATH); errors.Is(err, os.ErrNotExist) {
-		log.Println("DB does not exist, creating...")
+		log.Println("[INFO] DB does not exist, creating...")
 	}
 
 	db, err = sql.Open("sqlite3", DB_PATH)
@@ -33,6 +33,6 @@ func InitDB() error {
 }
 
 func ShutdownDB() {
-    log.Println("closing db...")
+    log.Println("[SHUTDOWN] closing db...")
     db.Close()
 }
