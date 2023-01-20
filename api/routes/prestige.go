@@ -36,12 +36,6 @@ func PrestigeHandler(w http.ResponseWriter, r *http.Request) {
 		util.RespondWithError(w, http.StatusBadRequest, "invalid reqest")
 		return
 	}
-  //   changeAmount, err := strconv.ParseFloat(data, 64)
-  //   if err != nil {
-		// log.Println("[REQUEST] invalid request")
-		// util.RespondWithError(w, http.StatusBadRequest, "invalid reqest")
-		// return
-  //   }
 
 	// Execute update query
 	newPrestige, err := db.UpdatePrestige(int(id), changeAmount)
