@@ -24,15 +24,15 @@ func InitDB() error {
 		return err
 	}
 
-    _, err = db.Exec(create_users_table)
-    if err != nil {
-        return err
-    }
+	_, err = db.Exec(create_users_table)
+	if err != nil {
+		return err
+	}
 
 	return nil
 }
 
 func ShutdownDB() {
-    log.Println("[SHUTDOWN] closing db...")
-    db.Close()
+	log.Println("[SHUTDOWN] closing db...")
+	db.Close()
 }

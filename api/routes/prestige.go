@@ -88,7 +88,7 @@ func TokensHandler(w http.ResponseWriter, r *http.Request) {
 
 	log.Printf("[REQUEST] tokens updated for user: %d (new value: %0.2f)\n", id, newTokens)
 	util.RespondWithJSON(w, http.StatusOK, map[string]interface{}{
-		"message":  "tokens successfully updated",
-		"tokens": newTokens,
+		"message": "tokens successfully updated",
+		"tokens":  newTokens,
 	})
 }

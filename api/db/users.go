@@ -71,7 +71,6 @@ func GetUser(id int) (*User, error) {
 	return &u, err
 }
 
-
 func AddUser(u User) (sql.Result, error) {
 	// Execute insert user query
 	tx, err := db.Begin()
@@ -83,7 +82,7 @@ func AddUser(u User) (sql.Result, error) {
 		return nil, err
 	}
 	defer stmt.Close()
-    res, err := stmt.Exec(u.Name,
+	res, err := stmt.Exec(u.Name,
 		u.Discord_Name,
 		u.Discord_Id,
 		"Default Rank",
@@ -93,20 +92,19 @@ func AddUser(u User) (sql.Result, error) {
 	if err != nil {
 		return res, err
 	}
-    err = tx.Commit()
-    if err != nil {
-        return res, err
-    }
+	err = tx.Commit()
+	if err != nil {
+		return res, err
+	}
 
 	return res, nil
 }
 
 func RemoveUser(id int) error {
-    // Execute delete Query
-    if _, err := db.Exec(delete_user, id); err != nil {
-        return err
-    }
+	// Execute delete Query
+	if _, err := db.Exec(delete_user, id); err != nil {
+		return err
+	}
 
-    return nil
+	return nil
 }
-
