@@ -44,6 +44,7 @@ func main() {
 	r := mux.NewRouter()
 	r.HandleFunc("/", RootHandler)
     r.HandleFunc("/users", routes.GetUsersHandler).Methods("GET")
+    r.HandleFunc("/users", routes.AddUserHandler).Methods("POST")
     r.HandleFunc("/users/{id}", routes.GetUserHandler).Methods("GET")
 
     // Set timeouts on connections

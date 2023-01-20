@@ -19,3 +19,8 @@ var get_all_users string = `
 var get_user_by_id string = `
     SELECT * FROM users WHERE id = ?;
 `
+
+var insert_user string = `
+    INSERT INTO users (name, discord_name, discord_id, cur_rank, prestige, tokens)
+    VALUES (?, ?, ?, ?, ?, ?);
+`

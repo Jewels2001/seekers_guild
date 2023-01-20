@@ -1,5 +1,7 @@
 package db
 
+import "database/sql"
+
 type User struct {
 	Id           int     `json:'id'`
 	Name         string  `json:'name'`
@@ -24,13 +26,13 @@ func GetUsers() ([]*User, error) {
 	for rows.Next() {
 		var u User
 		err = rows.Scan(&u.Id,
-                        &u.Name,
-                        &u.Discord_Name,
-                        &u.Discord_Id,
-                        &u.Cur_Rank,
-                        &u.Prestige,
-                        &u.Tokens,
-                    )
+			&u.Name,
+			&u.Discord_Name,
+			&u.Discord_Id,
+			&u.Cur_Rank,
+			&u.Prestige,
+			&u.Tokens,
+		)
 		if err != nil {
 			return data, err
 		}
@@ -45,26 +47,55 @@ func GetUsers() ([]*User, error) {
 }
 
 func GetUser(id int) (*User, error) {
-    // Execute get user by id query
-    stmt, err := db.Prepare(get_user_by_id)
-    if err != nil {
-        return nil, err
-    }
-    defer stmt.Close()
+	// Execute get user by id query
+	stmt, err := db.Prepare(get_user_by_id)
+	if err != nil {
+		return nil, err
+	}
+	defer stmt.Close()
 
-    var u User
-    err = stmt.QueryRow(id).Scan(
-        &u.Id,
-        &u.Name,
-        &u.Discord_Name,
-        &u.Discord_Id,
-        &u.Cur_Rank,
-        &u.Prestige,
-        &u.Tokens,
-    )
+	var u User
+	err = stmt.QueryRow(id).Scan(
+		&u.Id,
+		&u.Name,
+		&u.Discord_Name,
+		&u.Discord_Id,
+		&u.Cur_Rank,
+		&u.Prestige,
+		&u.Tokens,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	return &u, err
+}
+
+func AddUser(u User) (sql.Result, error) {
+	// Execute insert user query
+	tx, err := db.Begin()
+	if err != nil {
+		return nil, err
+	}
+	stmt, err := tx.Prepare(insert_user)
+	if err != nil {
+		return nil, err
+	}
+	defer stmt.Close()
+    res, err := stmt.Exec(u.Name,
+		u.Discord_Name,
+		u.Discord_Id,
+		"Default Rank",
+		0.0,
+		0.0,
+	)
+	if err != nil {
+		return res, err
+	}
+    err = tx.Commit()
     if err != nil {
-        return nil, err
+        return res, err
     }
 
-    return &u, err
+	return res, nil
 }
