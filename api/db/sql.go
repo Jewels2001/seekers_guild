@@ -29,3 +29,8 @@ var delete_user string = `
     DELETE FROM users
     WHERE id = ?;
 `
+
+var update_prestige string = `
+    UPDATE users SET prestige = round(prestige + ?, 2)
+    WHERE id = ?;
+`

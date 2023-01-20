@@ -102,10 +102,11 @@ func AddUser(u User) (sql.Result, error) {
 }
 
 func RemoveUser(id int) error {
-    // Executer delete Query
+    // Execute delete Query
     if _, err := db.Exec(delete_user, id); err != nil {
         return err
     }
 
     return nil
 }
+
