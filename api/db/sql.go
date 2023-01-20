@@ -34,3 +34,8 @@ var update_prestige string = `
     UPDATE users SET prestige = round(prestige + ?, 2)
     WHERE id = ?;
 `
+
+var update_tokens string = `
+    UPDATE users SET tokens = round(tokens + ?, 2)
+    WHERE id = ?;
+`

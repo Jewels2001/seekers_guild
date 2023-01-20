@@ -49,6 +49,7 @@ func main() {
     r.HandleFunc("/users/{id}", routes.GetUserHandler).Methods("GET")
     r.HandleFunc("/users/{id}", routes.RemoveUserHandler).Methods("DELETE")
     r.HandleFunc("/users/{id}/updatePrestige", routes.PrestigeHandler).Methods("PATCH")
+    r.HandleFunc("/users/{id}/updateTokens", routes.TokensHandler).Methods("PATCH")
 
     // Set timeouts on connections
 	srv := &http.Server{
