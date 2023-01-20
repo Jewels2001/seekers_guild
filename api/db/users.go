@@ -71,6 +71,7 @@ func GetUser(id int) (*User, error) {
 	return &u, err
 }
 
+
 func AddUser(u User) (sql.Result, error) {
 	// Execute insert user query
 	tx, err := db.Begin()
@@ -98,4 +99,13 @@ func AddUser(u User) (sql.Result, error) {
     }
 
 	return res, nil
+}
+
+func RemoveUser(id int) error {
+    // Executer delete Query
+    if _, err := db.Exec(delete_user, id); err != nil {
+        return err
+    }
+
+    return nil
 }

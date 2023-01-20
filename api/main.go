@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 	"flag"
-	"fmt"
+    "fmt"
 	"log"
 	"net/http"
 	"os"
@@ -12,6 +12,7 @@ import (
 
 	"github.com/Jewels2001/seekers_guild/api/db"
 	"github.com/Jewels2001/seekers_guild/api/routes"
+	"github.com/Jewels2001/seekers_guild/api/util"
 
 	"github.com/gorilla/mux"
 )
@@ -24,8 +25,8 @@ const (
 // Hello world landing page for root endpoint
 //
 func RootHandler(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusOK)
-	fmt.Fprintf(w, "SEEKERS_GUILD API is ONLINE: %s", time.Now().String())
+	log.Printf("[REQUEST] \"/\"\t{%s}\n", r.RemoteAddr)
+    util.RespondWithJSON(w, http.StatusOK, fmt.Sprintf("SEEKERS_GUILD API is ONLINE: %s", time.Now().String()))
 }
 
 func main() {
@@ -46,6 +47,7 @@ func main() {
     r.HandleFunc("/users", routes.GetUsersHandler).Methods("GET")
     r.HandleFunc("/users", routes.AddUserHandler).Methods("POST")
     r.HandleFunc("/users/{id}", routes.GetUserHandler).Methods("GET")
+    r.HandleFunc("/users/{id}", routes.RemoveUserHandler).Methods("DELETE")
 
     // Set timeouts on connections
 	srv := &http.Server{

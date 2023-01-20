@@ -35,6 +35,7 @@ func GetUserHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println("[REQUEST] invalid request")
 		util.RespondWithError(w, http.StatusBadRequest, "invalid reqest")
+        return 
 	}
 
 	// Get user from DB
@@ -86,4 +87,27 @@ func AddUserHandler(w http.ResponseWriter, r *http.Request) {
 
     log.Println("[REQUEST] added user:", id)
     util.RespondWithJSON(w, http.StatusOK, full_user)
+}
+
+func RemoveUserHandler(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	log.Printf("[REQUEST] \"/users/%s\" DELETE\t{%s}\n", vars["id"], r.RemoteAddr)
+
+    // Parse params
+	id, err := strconv.ParseInt(vars["id"], 10, 64)
+	if err != nil {
+		log.Println("[REQUEST] invalid request")
+		util.RespondWithError(w, http.StatusBadRequest, "invalid reqest")
+        return
+	}
+    
+    // Make transaction in db
+    if err = db.RemoveUser(int(id)); err != nil {
+        log.Println("[ERROR] error removing user")
+        util.RespondWithError(w, http.StatusInternalServerError, "error removing user")
+        return
+    }
+
+    log.Println("[REQUEST] removed user:", id)
+    util.RespondWithJSON(w, http.StatusOK, "user successfully removed")
 }

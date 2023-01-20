@@ -24,3 +24,8 @@ var insert_user string = `
     INSERT INTO users (name, discord_name, discord_id, cur_rank, prestige, tokens)
     VALUES (?, ?, ?, ?, ?, ?);
 `
+
+var delete_user string = `
+    DELETE FROM users
+    WHERE id = ?;
+`
