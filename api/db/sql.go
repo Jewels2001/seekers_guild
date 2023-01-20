@@ -11,3 +11,31 @@ CREATE TABLE IF NOT EXISTS 'users' (
 	'tokens' FLOAT64 NOT NULL
 );
 `
+
+var get_all_users string = `
+    SELECT * FROM users;
+`
+
+var get_user_by_id string = `
+    SELECT * FROM users WHERE id = ?;
+`
+
+var insert_user string = `
+    INSERT INTO users (name, discord_name, discord_id, cur_rank, prestige, tokens)
+    VALUES (?, ?, ?, ?, ?, ?);
+`
+
+var delete_user string = `
+    DELETE FROM users
+    WHERE id = ?;
+`
+
+var update_prestige string = `
+    UPDATE users SET prestige = round(prestige + ?, 2)
+    WHERE id = ?;
+`
+
+var update_tokens string = `
+    UPDATE users SET tokens = round(tokens + ?, 2)
+    WHERE id = ?;
+`
