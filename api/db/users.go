@@ -10,6 +10,12 @@ type User struct {
 	Cur_Rank     string  `json:'cur_rank'`
 	Prestige     float64 `json:'prestige'`
 	Tokens       float64 `json:'tokens'`
+
+    passwdHash string
+}
+
+func (u *User) ValidatePasswordHash(passwdHash string) bool {
+    return u.passwdHash == passwdHash
 }
 
 func GetUsers() ([]*User, error) {
@@ -108,3 +114,4 @@ func RemoveUser(id int) error {
 
 	return nil
 }
+

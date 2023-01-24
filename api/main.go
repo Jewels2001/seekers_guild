@@ -43,7 +43,14 @@ func main() {
 	// Setup Router
 	r := mux.NewRouter()
 	r.HandleFunc("/", RootHandler)
-	r.HandleFunc("/users", routes.GetUsersHandler).Methods("GET")
+
+    // Auth routes
+    r.HandleFunc("/register", routes.RegisterHandler).Methods("POST")
+    r.HandleFunc("/login", routes.LoginHandler).Methods("POST")
+    r.HandleFunc("/logout", routes.LogoutHandler).Methods("POST")
+	
+    // User management routes
+    r.HandleFunc("/users", routes.GetUsersHandler).Methods("GET")
 	r.HandleFunc("/users", routes.AddUserHandler).Methods("POST")
 	r.HandleFunc("/users/{id}", routes.GetUserHandler).Methods("GET")
 	r.HandleFunc("/users/{id}", routes.RemoveUserHandler).Methods("DELETE")

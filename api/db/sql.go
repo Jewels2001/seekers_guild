@@ -1,5 +1,7 @@
 package db
 
+// User SQL
+
 var create_users_table string = `
 CREATE TABLE IF NOT EXISTS 'users' (
 	'id' INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -8,7 +10,8 @@ CREATE TABLE IF NOT EXISTS 'users' (
 	'discord_id' VARCHAR(18),
 	'cur_rank' VARCHAR(255) NOT NULL,
 	'prestige' FLOAT64 NOT NULL,
-	'tokens' FLOAT64 NOT NULL
+	'tokens' FLOAT64 NOT NULL,
+    'password' VARCHAR(255) NOT NULL
 );
 `
 
@@ -38,4 +41,29 @@ var update_prestige string = `
 var update_tokens string = `
     UPDATE users SET tokens = round(tokens + ?, 2)
     WHERE id = ?;
+`
+
+// AUTH SQL
+
+var create_tokens_table string = `
+CREATE TABLE IF NOT EXISTS tokens (
+    'id' INTEGER PRIMARY KEY AUTOINCREMENT,
+    'uid' varchar(16) NOT NULL,
+    'aid' varchar(16) NOT NULL
+);
+`
+
+var insert_token string = `
+    INSERT INTO tokens(uid,aid)
+    VALUES (?,?);
+`
+
+var delete_token string = `
+    DELETE FROM tokens
+    WHERE id = ?;
+`
+
+var check_token string = `
+    SELECT * FROM tokens
+    WHERE aid = ?
 `
