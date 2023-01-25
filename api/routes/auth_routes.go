@@ -4,6 +4,9 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"strconv"
+
+	"github.com/google/uuid"
 
 	"github.com/Jewels2001/seekers_guild/api/db"
 	"github.com/Jewels2001/seekers_guild/api/util"
@@ -89,22 +92,47 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-    // Get user from db
-    user, err := db.GetUserByEmail(email)
-    if err != nil {
-        log.Println("[ERROR]", err.Error())
-        util.RespondWithError(w, http.StatusInternalServerError, "unable to retreive user")
-        return
-    }
+	// Get user from db
+	user, err := db.GetUserByEmail(email)
+	if err != nil {
+		log.Println("[ERROR]", err.Error())
+		util.RespondWithError(w, http.StatusInternalServerError, "unable to retreive user")
+		return
+	}
 
-    // Check password hash against db
-    if user.ValidatePasswordHash(passwdHash) {
-        log.Printf("[REQUEST] user %d successfully logged in\n", user.Id)
-        util.RespondWithJSON(w, http.StatusOK, map[string]string{"token":"token_goes_here"})
-    } else {
-        log.Printf("[REQUEST] invalid login attempt for user %d\n", user.Id)
-        util.RespondWithError(w, http.StatusUnauthorized, "incorrect credentials")
-    }
+	// Check password hash against db
+	if user.ValidatePasswordHash(passwdHash) {
+		log.Printf("[REQUEST] user %d successfully logged in\n", user.Id)
+
+		// Generate token
+		tokenParams := db.Token{
+			Uid: user.Id,
+			Aid: uuid.New().String(),
+		}
+		claims := map[string]string{
+			"uid": strconv.Itoa(tokenParams.Uid),
+			"aid": tokenParams.Aid,
+		}
+
+		token, err := util.GenerateToken(claims, "HS256")
+		if err != nil {
+			log.Println("[ERROR] error generating token:", err.Error())
+			util.RespondWithError(w, http.StatusInternalServerError, "error generating token")
+			return
+		}
+
+		// Add token to db
+		if _, err = db.AddToken(tokenParams); err != nil {
+			log.Println("[ERROR] error writing token to database")
+			util.RespondWithError(w, http.StatusInternalServerError, "error generating token")
+			return
+		}
+
+		util.RespondWithJSON(w, http.StatusOK, map[string]string{"token": token})
+	} else {
+		log.Printf("[REQUEST] invalid login attempt for user %d\n", user.Id)
+		util.RespondWithError(w, http.StatusUnauthorized, "incorrect credentials")
+	}
 }
 
 func LogoutHandler(w http.ResponseWriter, r *http.Request) {

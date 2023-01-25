@@ -35,7 +35,7 @@ func GetUsers() ([]*User, error) {
 		err = rows.Scan(&u.Id,
 			&u.Name,
 			&u.Email,
-            &u.passwdHash,
+			&u.passwdHash,
 			// &u.Discord_Name,
 			// &u.Discord_Id,
 			&u.Cur_Rank,
@@ -68,7 +68,7 @@ func GetUser(id int) (*User, error) {
 		&u.Id,
 		&u.Name,
 		&u.Email,
-        &u.passwdHash,
+		&u.passwdHash,
 		// &u.Discord_Name,
 		// &u.Discord_Id,
 		&u.Cur_Rank,
@@ -95,7 +95,7 @@ func GetUserByEmail(email string) (*User, error) {
 		&u.Id,
 		&u.Name,
 		&u.Email,
-        &u.passwdHash,
+		&u.passwdHash,
 		// &u.Discord_Name,
 		// &u.Discord_Id,
 		&u.Cur_Rank,
@@ -115,13 +115,13 @@ func AddUser(name, email, passwdHash string) (int, error) {
 	if err != nil {
 		return -1, err
 	}
-    defer tx.Commit()
+	defer tx.Commit()
 	stmt, err := tx.Prepare(insert_user)
-    if err != nil {
+	if err != nil {
 		return -1, err
 	}
 	defer stmt.Close()
-    res, err := stmt.Exec(
+	res, err := stmt.Exec(
 		name,
 		email,
 		passwdHash,
@@ -130,14 +130,14 @@ func AddUser(name, email, passwdHash string) (int, error) {
 		0.0,
 	)
 	if err != nil {
-        if strings.HasPrefix(err.Error(), "UNIQUE constraint failed:") {
-            return -1, nil
-        }
+		if strings.HasPrefix(err.Error(), "UNIQUE constraint failed:") {
+			return -1, nil
+		}
 		return -1, err
 	}
-	
-    id, err := res.LastInsertId()
-    if err != nil {
+
+	id, err := res.LastInsertId()
+	if err != nil {
 		return -1, err
 	}
 

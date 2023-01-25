@@ -13,6 +13,7 @@ import (
 	"github.com/Jewels2001/seekers_guild/api/db"
 	"github.com/Jewels2001/seekers_guild/api/routes"
 	"github.com/Jewels2001/seekers_guild/api/util"
+	"github.com/joho/godotenv"
 
 	"github.com/gorilla/mux"
 )
@@ -34,6 +35,9 @@ func main() {
 	flag.DurationVar(&wait, "graceful-timeout", time.Second, "the duration for which the server gracefully wait for existing connections to finish - e.g. 15s or 1m")
 	flag.Parse()
 
+	// Read environment variables from file
+	godotenv.Load()
+
 	// Setup DB
 	if err := db.InitDB(); err != nil {
 		log.Fatal(err)
@@ -44,13 +48,13 @@ func main() {
 	r := mux.NewRouter()
 	r.HandleFunc("/", RootHandler)
 
-    // Auth routes
-    r.HandleFunc("/register", routes.RegisterHandler).Methods("POST")
-    r.HandleFunc("/login", routes.LoginHandler).Methods("POST")
-    r.HandleFunc("/logout", routes.LogoutHandler).Methods("POST")
-	
-    // User management routes
-    r.HandleFunc("/users", routes.GetUsersHandler).Methods("GET")
+	// Auth routes
+	r.HandleFunc("/register", routes.RegisterHandler).Methods("POST")
+	r.HandleFunc("/login", routes.LoginHandler).Methods("POST")
+	r.HandleFunc("/logout", routes.LogoutHandler).Methods("POST")
+
+	// User management routes
+	r.HandleFunc("/users", routes.GetUsersHandler).Methods("GET")
 	r.HandleFunc("/users/{id}", routes.GetUserHandler).Methods("GET")
 	r.HandleFunc("/users/{id}", routes.RemoveUserHandler).Methods("DELETE")
 	r.HandleFunc("/users/{id}/updatePrestige", routes.PrestigeHandler).Methods("PATCH")

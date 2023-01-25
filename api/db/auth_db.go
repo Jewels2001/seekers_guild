@@ -2,7 +2,12 @@ package db
 
 import "database/sql"
 
-func TokenActive(aid int) (bool, error) {
+type Token struct {
+	Uid int
+	Aid string
+}
+
+func TokenExists(aid string) (bool, error) {
 	// Execute check token query
 	var auth_id string
 	err := db.QueryRow(check_token, aid).Scan(&auth_id)
@@ -16,7 +21,7 @@ func TokenActive(aid int) (bool, error) {
 	return true, nil
 }
 
-func AddToken(uid, aid string) (sql.Result, error) {
+func AddToken(token Token) (sql.Result, error) {
 	// Execute insert token query
 	tx, err := db.Begin()
 	if err != nil {
@@ -27,7 +32,7 @@ func AddToken(uid, aid string) (sql.Result, error) {
 		return nil, err
 	}
 	defer stmt.Close()
-	res, err := stmt.Exec(uid, aid)
+	res, err := stmt.Exec(token.Uid, token.Aid)
 	if err != nil {
 		return res, err
 	}
