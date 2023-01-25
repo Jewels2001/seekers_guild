@@ -138,4 +138,27 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 func LogoutHandler(w http.ResponseWriter, r *http.Request) {
 	log.Printf("[REQUEST] \"/logout\" POST\t{%s}\n", r.RemoteAddr)
 
+	// Extract incoming data
+	var body map[string]int
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		log.Println("[REQUEST] bad body")
+		util.RespondWithError(w, http.StatusBadRequest, "invalid request body")
+		return
+	}
+	id, ok := body["id"]
+	if !ok {
+        log.Println("[REQUEST] bad body: no id")
+		util.RespondWithError(w, http.StatusBadRequest, "invalid request body")
+		return
+	}
+
+    // Remove all tokens associated with uid
+    if err := db.RemoveToken(id); err != nil {
+        log.Println("[ERROR] error invalidating tokens:", err.Error())
+		util.RespondWithError(w, http.StatusInternalServerError, "error invalidating tokens")
+		return
+    }
+    
+    log.Printf("[REQUEST] user %d successfully logged out\n", id)
+    util.RespondWithJSON(w, http.StatusOK, map[string]string{"response":"successfully logged out"})
 }

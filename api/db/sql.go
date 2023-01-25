@@ -63,9 +63,9 @@ var insert_token string = `
     VALUES (?,?);
 `
 
-var delete_token string = `
+var delete_tokens string = `
     DELETE FROM tokens
-    WHERE id = ?;
+    WHERE uid = ?;
 `
 
 var check_token string = `

@@ -44,9 +44,9 @@ func AddToken(token Token) (sql.Result, error) {
 	return res, nil
 }
 
-func RemoveToken(id int) error {
+func RemoveToken(uid int) error {
 	// Execute delete Query
-	if _, err := db.Exec(delete_token, id); err != nil {
+	if _, err := db.Exec(delete_tokens, uid); err != nil {
 		return err
 	}
 
