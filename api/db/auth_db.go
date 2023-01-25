@@ -4,12 +4,12 @@ import "database/sql"
 
 func TokenActive(aid int) (bool, error) {
 	// Execute check token query
-    var auth_id string
-    err := db.QueryRow(check_token, aid).Scan(&auth_id)
+	var auth_id string
+	err := db.QueryRow(check_token, aid).Scan(&auth_id)
 	if err != nil {
-        if err != sql.ErrNoRows {
-            return false, err
-        }
+		if err != sql.ErrNoRows {
+			return false, err
+		}
 		return false, nil
 	}
 

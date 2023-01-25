@@ -1,21 +1,22 @@
 package db
 
-import "database/sql"
+import "strings"
 
 type User struct {
-	Id           int     `json:'id'`
-	Name         string  `json:'name'`
-	Discord_Name string  `json:'discord_name'`
-	Discord_Id   string  `json:'discord_id'`
-	Cur_Rank     string  `json:'cur_rank'`
-	Prestige     float64 `json:'prestige'`
-	Tokens       float64 `json:'tokens'`
+	Id    int    `json:'id'`
+	Name  string `json:'name'`
+	Email string `json:'email'`
+	// Discord_Name string  `json:'discord_name'`
+	// Discord_Id   string  `json:'discord_id'`
+	Cur_Rank string  `json:'cur_rank'`
+	Prestige float64 `json:'prestige'`
+	Tokens   float64 `json:'tokens'`
 
-    passwdHash string
+	passwdHash string
 }
 
 func (u *User) ValidatePasswordHash(passwdHash string) bool {
-    return u.passwdHash == passwdHash
+	return u.passwdHash == passwdHash
 }
 
 func GetUsers() ([]*User, error) {
@@ -33,8 +34,10 @@ func GetUsers() ([]*User, error) {
 		var u User
 		err = rows.Scan(&u.Id,
 			&u.Name,
-			&u.Discord_Name,
-			&u.Discord_Id,
+			&u.Email,
+            &u.passwdHash,
+			// &u.Discord_Name,
+			// &u.Discord_Id,
 			&u.Cur_Rank,
 			&u.Prestige,
 			&u.Tokens,
@@ -64,8 +67,10 @@ func GetUser(id int) (*User, error) {
 	err = stmt.QueryRow(id).Scan(
 		&u.Id,
 		&u.Name,
-		&u.Discord_Name,
-		&u.Discord_Id,
+		&u.Email,
+        &u.passwdHash,
+		// &u.Discord_Name,
+		// &u.Discord_Id,
 		&u.Cur_Rank,
 		&u.Prestige,
 		&u.Tokens,
@@ -77,33 +82,39 @@ func GetUser(id int) (*User, error) {
 	return &u, err
 }
 
-func AddUser(u User) (sql.Result, error) {
+func AddUser(name, email, passwdHash string) (int, error) {
 	// Execute insert user query
 	tx, err := db.Begin()
 	if err != nil {
-		return nil, err
+		return -1, err
 	}
+    defer tx.Commit()
 	stmt, err := tx.Prepare(insert_user)
-	if err != nil {
-		return nil, err
+    if err != nil {
+		return -1, err
 	}
 	defer stmt.Close()
-	res, err := stmt.Exec(u.Name,
-		u.Discord_Name,
-		u.Discord_Id,
+    res, err := stmt.Exec(
+		name,
+		email,
+		passwdHash,
 		"Default Rank",
 		0.0,
 		0.0,
 	)
 	if err != nil {
-		return res, err
+        if strings.HasPrefix(err.Error(), "UNIQUE constraint failed:") {
+            return -1, nil
+        }
+		return -1, err
 	}
-	err = tx.Commit()
-	if err != nil {
-		return res, err
+	
+    id, err := res.LastInsertId()
+    if err != nil {
+		return -1, err
 	}
 
-	return res, nil
+	return int(id), nil
 }
 
 func RemoveUser(id int) error {
@@ -114,4 +125,3 @@ func RemoveUser(id int) error {
 
 	return nil
 }
-

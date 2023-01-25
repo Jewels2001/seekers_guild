@@ -51,7 +51,6 @@ func main() {
 	
     // User management routes
     r.HandleFunc("/users", routes.GetUsersHandler).Methods("GET")
-	r.HandleFunc("/users", routes.AddUserHandler).Methods("POST")
 	r.HandleFunc("/users/{id}", routes.GetUserHandler).Methods("GET")
 	r.HandleFunc("/users/{id}", routes.RemoveUserHandler).Methods("DELETE")
 	r.HandleFunc("/users/{id}/updatePrestige", routes.PrestigeHandler).Methods("PATCH")
