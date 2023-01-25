@@ -69,6 +69,42 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	log.Printf("[REQUEST] \"/login\" POST\t{%s}\n", r.RemoteAddr)
 
+	// Extract incoming data
+	var body map[string]string
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		log.Println("[REQUEST] bad body")
+		util.RespondWithError(w, http.StatusBadRequest, "invalid request body")
+		return
+	}
+	email, ok := body["email"]
+	if !ok {
+		log.Println("[REQUEST] bad body")
+		util.RespondWithError(w, http.StatusBadRequest, "invalid request body")
+		return
+	}
+	passwdHash, ok := body["passwdHash"]
+	if !ok {
+		log.Println("[REQUEST] bad body")
+		util.RespondWithError(w, http.StatusBadRequest, "invalid request body")
+		return
+	}
+
+    // Get user from db
+    user, err := db.GetUserByEmail(email)
+    if err != nil {
+        log.Println("[ERROR]", err.Error())
+        util.RespondWithError(w, http.StatusInternalServerError, "unable to retreive user")
+        return
+    }
+
+    // Check password hash against db
+    if user.ValidatePasswordHash(passwdHash) {
+        log.Printf("[REQUEST] user %d successfully logged in\n", user.Id)
+        util.RespondWithJSON(w, http.StatusOK, map[string]string{"token":"token_goes_here"})
+    } else {
+        log.Printf("[REQUEST] invalid login attempt for user %d\n", user.Id)
+        util.RespondWithError(w, http.StatusUnauthorized, "incorrect credentials")
+    }
 }
 
 func LogoutHandler(w http.ResponseWriter, r *http.Request) {

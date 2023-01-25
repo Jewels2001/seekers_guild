@@ -82,6 +82,33 @@ func GetUser(id int) (*User, error) {
 	return &u, err
 }
 
+func GetUserByEmail(email string) (*User, error) {
+	// Execute get user by id query
+	stmt, err := db.Prepare(get_user_by_email)
+	if err != nil {
+		return nil, err
+	}
+	defer stmt.Close()
+
+	var u User
+	err = stmt.QueryRow(email).Scan(
+		&u.Id,
+		&u.Name,
+		&u.Email,
+        &u.passwdHash,
+		// &u.Discord_Name,
+		// &u.Discord_Id,
+		&u.Cur_Rank,
+		&u.Prestige,
+		&u.Tokens,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	return &u, err
+}
+
 func AddUser(name, email, passwdHash string) (int, error) {
 	// Execute insert user query
 	tx, err := db.Begin()

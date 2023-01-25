@@ -24,6 +24,10 @@ var get_user_by_id string = `
     SELECT * FROM users WHERE id = ?;
 `
 
+var get_user_by_email string = `
+    SELECT * FROM users WHERE email = ?;
+`
+
 var insert_user string = `
     INSERT INTO users (name, email, password, cur_rank, prestige, tokens)
     VALUES (?, ?, ?, ?, ?, ?);
