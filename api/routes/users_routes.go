@@ -1,7 +1,6 @@
 package routes
 
 import (
-	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
@@ -52,41 +51,6 @@ func GetUserHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	util.RespondWithJSON(w, http.StatusOK, user)
-}
-
-func AddUserHandler(w http.ResponseWriter, r *http.Request) {
-	log.Printf("[REQUEST] \"/users\" POST\t{%s}\n", r.RemoteAddr)
-
-	// Extract incoming data
-	var u db.User
-	if err := json.NewDecoder(r.Body).Decode(&u); err != nil {
-		log.Println("[REQUEST] bad body")
-		util.RespondWithError(w, http.StatusBadRequest, "invalid request body")
-		return
-	}
-
-	// Add user to DB
-	res, err := db.AddUser(u)
-	if err != nil {
-		log.Println("[ERROR]", err.Error())
-		util.RespondWithError(w, http.StatusInternalServerError, "error adding user")
-		return
-	}
-	id, err := res.LastInsertId()
-	if err != nil {
-		log.Println("[ERROR]", err.Error())
-		util.RespondWithError(w, http.StatusInternalServerError, "error retreiving user")
-		return
-	}
-	full_user, err := db.GetUser(int(id))
-	if err != nil {
-		log.Println("[ERROR]", err.Error())
-		util.RespondWithError(w, http.StatusInternalServerError, "error retreiving user")
-		return
-	}
-
-	log.Println("[REQUEST] added user:", id)
-	util.RespondWithJSON(w, http.StatusOK, full_user)
 }
 
 func RemoveUserHandler(w http.ResponseWriter, r *http.Request) {

@@ -24,7 +24,14 @@ func InitDB() error {
 		return err
 	}
 
+	// Create users table
 	_, err = db.Exec(create_users_table)
+	if err != nil {
+		return err
+	}
+
+	// Create tokens table
+	_, err = db.Exec(create_tokens_table)
 	if err != nil {
 		return err
 	}
