@@ -5,7 +5,7 @@
 
 body {
   
-  color: blueviolet;
+  color: teal;
   background: rgb(15 23 42);
   font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu,
     Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
@@ -13,4 +13,16 @@ body {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+tr {
+  border-color: orange;
+}
+
+a {
+  color: blueviolet;
+}
+
+div {
+  width: max-screen;
 }

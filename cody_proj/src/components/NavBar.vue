@@ -16,9 +16,13 @@
             </div>
         </div>
 
-    </nav>
-    <div >
-        Hi!
-    </div>
+    </nav>D
     
 </template>
+
+<style>
+a:active {
+  color: black;
+}
+
+</style>
